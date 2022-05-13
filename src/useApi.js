@@ -16,7 +16,7 @@ const API_URL = "https://jsonmock.hackerrank.com/api/movies/search/?page=";
  *      imdbID: "tt0114898"
  *    }, ...]
  * }
-*/
+ */
 const useApi = (page) => {
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState(null);

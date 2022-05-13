@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes  from "prop-types";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import MovieIcon from "@mui/icons-material/Movie";
 import Table from "@mui/material/Table";
@@ -16,15 +16,22 @@ import MovieTableToolbar from "../../components/MovieTableToolbar";
 /**
  * Movie data table
  * Renders list of data from movie API
- * 
+ *
  * curPage is 0-indexed
  */
-const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onPageChange }) => {
-
+const MovieTable = ({
+  movieData,
+  rowCount,
+  rowsPerPage,
+  totalPages,
+  curPage,
+  onPageChange,
+}) => {
   /** Sorting order, either "asc" or "desc" */
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("");
   const [filterStr, setFilterStr] = React.useState("");
+  const [selected, setSelected] = React.useState([]);
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -50,6 +57,23 @@ const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onP
 
   const handleFilterChange = (inputStr) => {
     setFilterStr(inputStr.toLowerCase());
+  };
+
+  const handleClick = (index) => {
+    if (isSelected(index)) {
+      // Already selected, filter out selected index
+      setSelected(selected.filter((i) => i !== index));
+    } else {
+      // Not selected, add
+      setSelected([...selected, index]);
+    }
+  };
+
+  /** Util - Check if row is selected by index */
+  const isSelected = (index) => selected.indexOf(index) !== -1;
+
+  const clearSelected = () => {
+    setSelected([]);
   };
 
   const filterRow = (row) =>
@@ -78,7 +102,15 @@ const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onP
                 .filter(filterRow)
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => (
-                  <TableRow hover tabIndex={-1} key={`${row.Title}${index}`}>
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={`${row.Title}${index}`}
+                    selected={isSelected(index)}
+                    onClick={() => {
+                      handleClick(index);
+                    }}
+                  >
                     <TableCell component="th" scope="row">
                       {row.Title}
                     </TableCell>
@@ -103,8 +135,11 @@ const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onP
           page={curPage}
           showFirstButton={true}
           showLastButton={true}
-          labelDisplayedRows={({from, to, count, page}) => `${page+1} / ${totalPages}`}
+          labelDisplayedRows={({ from, to, count, page }) =>
+            `${page + 1} / ${totalPages}`
+          }
           onPageChange={(_, page) => {
+            clearSelected();
             onPageChange(page);
           }}
         />
@@ -115,11 +150,11 @@ const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onP
 
 MovieTable.propTypes = {
   movieData: PropTypes.array,
-  rowCount: PropTypes.number, 
+  rowCount: PropTypes.number,
   rowsPerPage: PropTypes.number,
   totalPages: PropTypes.number,
-  curPage: PropTypes.number, 
-  onPageChange: PropTypes.func, 
+  curPage: PropTypes.number,
+  onPageChange: PropTypes.func,
 };
 
 export default MovieTable;
