@@ -1,21 +1,27 @@
 import React from "react";
+import PropTypes  from "prop-types";
 import Box from "@mui/material/Box";
-import MovieIcon from '@mui/icons-material/Movie';
+import MovieIcon from "@mui/icons-material/Movie";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Link from "@mui/material/Link"
+import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import MovieTableHead from "../../components/MovieTableHead";
 import MovieTableToolbar from "../../components/MovieTableToolbar";
 
-const MovieTable = ({ movieData }) => {
+/**
+ * Movie data table
+ * Renders list of data from movie API
+ */
+const MovieTable = ({ movieData, rowCount, rowsPerPage, curPage, onPageChange }) => {
+
+  /** Sorting order, either "asc" or "desc" */
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("");
-  const [page, setPage] = React.useState(0);
   const [filterStr, setFilterStr] = React.useState("");
 
   const descendingComparator = (a, b, orderBy) => {
@@ -40,10 +46,6 @@ const MovieTable = ({ movieData }) => {
     setOrderBy(property);
   };
 
-  const handleChangePage = (_, newPage) => {
-    setPage(newPage);
-  };
-
   const handleFilterChange = (inputStr) => {
     setFilterStr(inputStr.toLowerCase());
   };
@@ -51,7 +53,6 @@ const MovieTable = ({ movieData }) => {
   const filterRow = (row) =>
     row && row.Title && row.Title.toLowerCase().indexOf(filterStr) !== -1;
 
-    
   const makeIMDBLink = (id) => `https://www.imdb.com/title/${id}`;
 
   return (
@@ -68,15 +69,14 @@ const MovieTable = ({ movieData }) => {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={movieData.length}
             />
             <TableBody>
               {/* Filter, sort, and render each row */}
               {movieData
                 .filter(filterRow)
                 .sort(getComparator(order, orderBy))
-                .map((row) => (
-                  <TableRow hover tabIndex={-1} key={row.name}>
+                .map((row, index) => (
+                  <TableRow hover tabIndex={-1} key={`${row.Title}${index}`}>
                     <TableCell component="th" scope="row">
                       {row.Title}
                     </TableCell>
@@ -91,17 +91,29 @@ const MovieTable = ({ movieData }) => {
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
           component="div"
-          count={movieData.length}
-          rowsPerPage={-1}
+          count={rowCount}
+          rowsPerPage={rowsPerPage}
+          rowCount={rowCount}
           rowsPerPageOptions={[]}
-          page={page}
-          onPageChange={handleChangePage}
+          page={curPage}
+          onPageChange={(_, page) => {
+            onPageChange(page);
+          }}
         />
       </Paper>
     </Box>
   );
+};
+
+MovieTable.propTypes = {
+  movieData: PropTypes.array,
+  rowCount: PropTypes.number, 
+  rowsPerPage: PropTypes.number,
+  curPage: PropTypes.number, 
+  onPageChange: PropTypes.func, 
 };
 
 export default MovieTable;

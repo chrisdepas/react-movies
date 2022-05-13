@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 
 /**
  * Centered animated loader
- * Takes up entire page
  */
 const Loader = () => (
   <Box sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}>

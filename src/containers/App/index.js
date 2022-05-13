@@ -11,18 +11,34 @@ import Loader from "../../components/Loader";
 
 const App = () => {
   const [loading, setLoading] = React.useState(true);
+  const [page, setPage] = React.useState(0);
+  /**
+   * API response data. Example:
+   * {
+   *    page: 1,
+   *    per_page: 10,
+   *    total: 2770,
+   *    total_pages: 277,
+   *    data: [{
+   *      Title: "Waterworld",
+   *      Year: 1995,
+   *      imdbID: "tt0114898"
+   *    }, ...]
+   * }
+   */
   const [data, setData] = React.useState(null);
-  const [page, setPage] = React.useState(1);
 
   const fetchMovies = (page) => {
-    fetch(`https://jsonmock.hackerrank.com/api/movies/search/?page=${page}`)
+    // API starts at page 1
+    const apiPage = page + 1;
+
+    fetch(`https://jsonmock.hackerrank.com/api/movies/search/?page=${apiPage}`)
       .then((response) => {
         return response.json();
       })
       .then((json) => {
-        console.log(json.data);
         setLoading(false);
-        setData(json.data);
+        setData(json);
       });
   };
 
@@ -53,7 +69,19 @@ const App = () => {
       </Box>
 
       {/** Data table */}
-      {loading ? <Loader /> : <MovieTable movieData={data} />}
+      {loading ? (
+        <Loader />
+      ) : (
+        <MovieTable
+          movieData={data.data}
+          rowCount={data.total}
+          rowsPerPage={data.per_page}
+          curPage={page}
+          onPageChange={(page) => {
+            setPage(page);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -7,7 +7,7 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 
 /**
- * ID must match 
+ * ID must match API properties or sorting will fail
  */
 const headCells = [
   {

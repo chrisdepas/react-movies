@@ -4,6 +4,9 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 
+/**
+ * Top of Movie Table, with 'filter by title' textbox
+ */
 const MovieTableToolbar = ({ onFilterChange }) => {
   return (
     <Toolbar
