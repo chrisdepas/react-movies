@@ -16,8 +16,10 @@ import MovieTableToolbar from "../../components/MovieTableToolbar";
 /**
  * Movie data table
  * Renders list of data from movie API
+ * 
+ * curPage is 0-indexed
  */
-const MovieTable = ({ movieData, rowCount, rowsPerPage, curPage, onPageChange }) => {
+const MovieTable = ({ movieData, rowCount, rowsPerPage, totalPages, curPage, onPageChange }) => {
 
   /** Sorting order, either "asc" or "desc" */
   const [order, setOrder] = React.useState("asc");
@@ -99,6 +101,9 @@ const MovieTable = ({ movieData, rowCount, rowsPerPage, curPage, onPageChange })
           rowCount={rowCount}
           rowsPerPageOptions={[]}
           page={curPage}
+          showFirstButton={true}
+          showLastButton={true}
+          labelDisplayedRows={({from, to, count, page}) => `${page+1} / ${totalPages}`}
           onPageChange={(_, page) => {
             onPageChange(page);
           }}
@@ -112,6 +117,7 @@ MovieTable.propTypes = {
   movieData: PropTypes.array,
   rowCount: PropTypes.number, 
   rowsPerPage: PropTypes.number,
+  totalPages: PropTypes.number,
   curPage: PropTypes.number, 
   onPageChange: PropTypes.func, 
 };

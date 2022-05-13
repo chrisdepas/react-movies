@@ -76,6 +76,7 @@ const App = () => {
           movieData={data.data}
           rowCount={data.total}
           rowsPerPage={data.per_page}
+          totalPages={data.total_pages}
           curPage={page}
           onPageChange={(page) => {
             setPage(page);
